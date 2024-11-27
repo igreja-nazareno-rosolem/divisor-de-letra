@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-	<title>Divisor de letra</title>
+    <title>Divisor de letra</title>
     <style>
         * {
             color: #DFF3E4;
@@ -79,7 +80,7 @@
             display: block;
         }
     </style>
-	<script>
+    <script>
         function getTitle(first_paragraph) {
             const lines = first_paragraph.split('\n');
             return lines.join(' - ');
@@ -90,10 +91,10 @@
         }
 
         function divideLyrics() {
-			// var inputText = document.getElementById("inputTextArea").value;
             const input_lyrics = document.getElementById("inputTextArea").value;
-            const without_parenthesis = removeParentheses(input_lyrics);
-            const par_lyrics = without_parenthesis.split('\n\n');
+            const parentheses_checkbox = document.getElementById("checkbox-parentheses");
+            const lyrics = parentheses_checkbox.checked ? removeParentheses(input_lyrics) : input_lyrics;
+            const par_lyrics = lyrics.split('\n\n');
             const title = getTitle(par_lyrics.shift());
             const break_line_count = par_lyrics.map(par => (par.match(/\n/g) || []).length);
             var aux_list = [];
@@ -105,8 +106,8 @@
                 var aux = par.split('\n');
                 // console.log(aux)
                 for (let i = 0; i < aux.length; i += 2) {
-                    if (i+1 < aux.length) {
-                        result.push(aux[i] + '\n' + aux[i+1]);
+                    if (i + 1 < aux.length) {
+                        result.push(aux[i] + '\n' + aux[i + 1]);
                     } else {
                         result.push(aux[i] + '\n ');
                     }
@@ -121,27 +122,27 @@
             return title + '\n \n\n' + div_lyrics_uppercase;
         }
 
-		function copyOutputText(text) {
+        function copyOutputText(text) {
             navigator.clipboard.writeText(text)
             showNotification();
-		}
+        }
 
-		function doAlmostEverything() {
+        function doAlmostEverything() {
             copyOutputText(divideLyrics());
             clearLyrics();
-		}
+        }
 
         function showNotification() {
             var notificationEl = document.querySelector('p.copy-success-message');
 
             notificationEl.classList.add('notify');
-            setTimeout(function() {
-            notificationEl.classList.remove('notify');
+            setTimeout(function () {
+                notificationEl.classList.remove('notify');
             }, 1000);
         }
 
         function copyFromClipboard() {
-            navigator.clipboard.readText().then(function(text) {
+            navigator.clipboard.readText().then(function (text) {
                 document.getElementById("inputTextArea").value = text;
             });
         }
@@ -149,23 +150,30 @@
         function clearLyrics() {
             document.getElementById("inputTextArea").value = "";
         }
-	</script>
+    </script>
 </head>
+
 <body>
     <div class="container">
         <h1 style="text-align: center;">Divisor de letra</h1>
         <div class="main">
             <div class="text-area text-area-left">
                 <textarea placeholder="Cole aqui a letra do louvor." id="inputTextArea" rows="20" cols="40"></textarea>
-                <div style="display: flex; justify-content: space-between;">
-                    <div style="display: flex; justify-content: start;">
-                        <p class="button copy-success-message">Copiado!
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <input type="checkbox" id="checkbox-parentheses" checked="true">
+                        <label for="checkbox-parentheses"> Remover Parênteses</label>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <button class="button" style="background-color: #ffbf00; color: #3423A6;" onclick="doAlmostEverything()">Divide e Copia</button>
+                        <button class="button" style="background-color: #ffbf00; color: #3423A6;"
+                            onclick="doAlmostEverything()">Divide e Copia</button>
                     </div>
                 </div>
+                <div style="display: flex; justify-content: center;">
+                    <p class="button copy-success-message">Copiado!
+                </div>
             </div>
-    </div>
+        </div>
 </body>
+
 </html>
