@@ -2,7 +2,7 @@
   "name": "divisor-de-letra",
   "version": "1.0.0",
   "description": "Projeto de um divisor de letras para usarmos na projeção da igreja",
-  "main": "src/script.js",
+  "main": "index.html",
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
