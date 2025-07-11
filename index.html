@@ -5,153 +5,8 @@
     <meta charset="UTF-8">
     <title>Divisor de letra</title>
     <link rel="icon" type="image/jpg" href="inr.jpg">
-    <style>
-        * {
-            color: #DFF3E4;
-            background-color: #171738;
-            box-sizing: border-box;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-        }
-
-        .container {
-            width: 95%;
-            max-width: 940px;
-            margin: 0 auto;
-        }
-
-        .main {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: start;
-            padding: 0%;
-        }
-
-        .text-area {
-            margin: 1%;
-            padding: 0%;
-        }
-
-        textarea {
-            margin: 10px 0px;
-            padding: 10px;
-            border-radius: 2%;
-            border: 2px solid #7180B9;
-            font-size: 18px;
-            cursor: auto;
-            /* position: absolute; */
-        }
-
-        textarea::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        textarea::-webkit-scrollbar-track {
-            /* -webkit-box-shadow: inset 0 0 6px #171738; */
-            margin-right: 5px;
-        }
-
-        textarea::-webkit-scrollbar-thumb {
-            /* background-color: #2E1760; */
-            background-color: #3423A6;
-            outline: 1px solid #171738;
-            border-radius: 5px;
-        }
-
-        textarea::placeholder {
-            /* color: #3423A6; */
-            color: #7180B9;
-        }
-
-        .button {
-            border: 2px solid #7180B9;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 5px 10px;
-        }
-
-        .copy-success-message {
-            margin: 0;
-            background: #DFF3E4;
-            color: #171738;
-            display: none;
-        }
-
-        .copy-success-message.notify {
-            display: block;
-        }
-    </style>
-    <script>
-        function getTitle(first_paragraph) {
-            const lines = first_paragraph.split('\n');
-            return lines.join(' - ');
-        }
-
-        function removeParentheses(inputString) {
-            return inputString.replace(/\([^)]*\)/g, '');
-        }
-
-        function divideLyrics() {
-            const input_lyrics = document.getElementById("inputTextArea").value;
-            const parentheses_checkbox = document.getElementById("checkbox-parentheses");
-            const lyrics = parentheses_checkbox.checked ? removeParentheses(input_lyrics) : input_lyrics;
-            const par_lyrics = lyrics.split('\n\n');
-            const title = getTitle(par_lyrics.shift());
-            const break_line_count = par_lyrics.map(par => (par.match(/\n/g) || []).length);
-            var aux_list = [];
-
-            for (let i = 0; i < par_lyrics.length; i++) {
-                const par = par_lyrics[i];
-                const count = break_line_count[i];
-                let result = [];
-                var aux = par.split('\n');
-                // console.log(aux)
-                for (let i = 0; i < aux.length; i += 2) {
-                    if (i + 1 < aux.length) {
-                        result.push(aux[i] + '\n' + aux[i + 1]);
-                    } else {
-                        result.push(aux[i] + '\n ');
-                    }
-                }
-                aux_list.push(result.join('\n\n'));
-            }
-
-            // aux_list = removeFirstPar(aux_list)
-
-            const div_lyrics = aux_list.join('\n\n');
-            const div_lyrics_uppercase = div_lyrics.toUpperCase();
-            return title + '\n \n\n' + div_lyrics_uppercase;
-        }
-
-        function copyOutputText(text) {
-            navigator.clipboard.writeText(text)
-            showNotification();
-        }
-
-        function doAlmostEverything() {
-            copyOutputText(divideLyrics());
-            clearLyrics();
-        }
-
-        function showNotification() {
-            var notificationEl = document.querySelector('p.copy-success-message');
-
-            notificationEl.classList.add('notify');
-            setTimeout(function () {
-                notificationEl.classList.remove('notify');
-            }, 1000);
-        }
-
-        function copyFromClipboard() {
-            navigator.clipboard.readText().then(function (text) {
-                document.getElementById("inputTextArea").value = text;
-            });
-        }
-
-        function clearLyrics() {
-            document.getElementById("inputTextArea").value = "";
-        }
-    </script>
+    <link rel="stylesheet" href="./src/style.css">
+    <script src="./src/index.js" defer type="module"></script>
 </head>
 
 <body>
@@ -167,7 +22,7 @@
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <button class="button" style="background-color: #ffbf00; color: #3423A6;"
-                            onclick="doAlmostEverything()">Divide e Copia</button>
+                            id="divideButton">Divide e Copia</button>
                     </div>
                 </div>
                 <div style="display: flex; justify-content: center;">
