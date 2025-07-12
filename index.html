@@ -91,10 +91,24 @@
             return inputString.replace(/\([^)]*\)/g, '');
         }
 
+        function removePunctuation(inputString) {
+            return inputString.replace(/[^\w\s]/gi, '');
+        }
+
         function divideLyrics() {
             const input_lyrics = document.getElementById("inputTextArea").value;
             const parentheses_checkbox = document.getElementById("checkbox-parentheses");
-            const lyrics = parentheses_checkbox.checked ? removeParentheses(input_lyrics) : input_lyrics;
+            const punctuation_checkbox = document.getElementById("checkbox-ponctuation");
+            let lyrics = input_lyrics;
+           
+            if (parentheses_checkbox.checked) {
+                lyrics = removeParentheses(lyrics);
+            }
+
+            if (punctuation_checkbox.checked) {
+                lyrics = removePunctuation(lyrics);
+            }
+            
             const par_lyrics = lyrics.split('\n\n');
             const title = getTitle(par_lyrics.shift());
             const break_line_count = par_lyrics.map(par => (par.match(/\n/g) || []).length);
@@ -160,11 +174,18 @@
         <div class="main">
             <div class="text-area text-area-left">
                 <textarea placeholder="Cole aqui a letra do louvor." id="inputTextArea" rows="20" cols="40"></textarea>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <input type="checkbox" id="checkbox-parentheses" checked="true">
-                        <label for="checkbox-parentheses"> Remover Parênteses</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div>
+                            <input type="checkbox" id="checkbox-parentheses" checked="true">
+                            <label for="checkbox-parentheses"> Remover Parênteses</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="checkbox-ponctuation" checked="true">
+                            <label for="checkbox-ponctuation"> Remover Pontuações</label>
+                        </div>
                     </div>
+                    
                     <div style="display: flex; justify-content: space-between;">
                         <button class="button" style="background-color: #ffbf00; color: #3423A6;"
                             onclick="doAlmostEverything()">Divide e Copia</button>
