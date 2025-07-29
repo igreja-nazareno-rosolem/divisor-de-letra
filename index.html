@@ -14,11 +14,17 @@
         <h1 style="text-align: center;">Divisor de letra</h1>
         <div class="main">
             <div class="text-area text-area-left">
-                <textarea placeholder="Cole aqui a letra do louvor." id="inputTextArea" rows="20" cols="40"></textarea>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
+                <textarea placeholder="Cole aqui a letra do louvor." id="inputTextArea" rows="20" cols="60"></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+                    <div style="display: grid; align-items: center; justify-content: center;">
+                        <div>
                         <input type="checkbox" id="checkbox-parentheses" checked="true">
                         <label for="checkbox-parentheses"> Remover Parênteses</label>
+                        </div>
+                        <div>
+                        <input type="checkbox" id="checkbox-lyrics-info" checked="true">
+                        <label for="checkbox-lyrics-info"> Primeiro parágrafo contém nome da música</label>
+                        </div>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <button class="button" style="background-color: #ffbf00; color: #3423A6;"
