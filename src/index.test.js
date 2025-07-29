@@ -17,6 +17,7 @@ describe("Main Application Functions", () => {
         value: jest.fn((id) => {
           if (id === "inputTextArea") return mockTextArea;
           if (id === "checkbox-parentheses") return mockCheckbox;
+          if (id === "checkbox-lyrics-info") return mockCheckbox;
           return null;
         }),
         writable: true,
@@ -36,13 +37,13 @@ describe("Main Application Functions", () => {
       });
 
       const { doAlmostEverything } = await import("./index.js");
-      
+
       // Should not throw error when called
       expect(() => doAlmostEverything()).not.toThrow();
-      
+
       // Should call clipboard writeText (from copyOutputText)
       expect(mockWriteText).toHaveBeenCalled();
-      
+
       // Should clear the textarea (from clearLyrics)
       expect(mockTextArea.value).toBe('');
 
@@ -68,7 +69,7 @@ describe("Main Application Functions", () => {
   describe("DOM Event Listeners", () => {
     test("should set up event listeners when module is imported", async () => {
       jest.resetModules();
-      
+
       // Mock DOM elements
       const mockDivideButton = {
         addEventListener: jest.fn(),
@@ -131,7 +132,7 @@ describe("Main Application Functions", () => {
 
     test("should handle missing divideButton gracefully", async () => {
       jest.resetModules();
-      
+
       // Store original methods
       const originalGetElementById = global.document.getElementById;
       const originalAddEventListener = global.document.addEventListener;

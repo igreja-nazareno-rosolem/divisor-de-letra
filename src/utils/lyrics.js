@@ -17,20 +17,30 @@ export function removeParentheses(inputString) {
   return result;
 }
 
+export function addTitle(title, lyrics) {
+  const titleWithNewline = title + "\n\n";
+  return title !== ""
+    ? titleWithNewline + lyrics
+    : lyrics;
+}
+
 export function divideLyrics() {
   const textArea = document.getElementById("inputTextArea");
   const parentheses_checkbox = document.getElementById("checkbox-parentheses");
-  
+  const lyrics_info_checkbox = document.getElementById("checkbox-lyrics-info");
+
   if (!textArea || !parentheses_checkbox) {
     return '';
   }
-  
+
   const input_lyrics = textArea.value;
   const lyrics = parentheses_checkbox.checked
     ? removeParentheses(input_lyrics)
     : input_lyrics;
   const par_lyrics = lyrics.split("\n\n");
-  const title = getTitle(par_lyrics.shift());
+  const title = lyrics_info_checkbox.checked
+    ? getTitle(par_lyrics.shift())
+    : "";
   const break_line_count = par_lyrics.map(
     (par) => (par.match(/\n/g) || []).length
   );
@@ -41,7 +51,6 @@ export function divideLyrics() {
     const count = break_line_count[i];
     let result = [];
     var aux = par.split("\n");
-    // console.log(aux)
     for (let i = 0; i < aux.length; i += 2) {
       if (i + 1 < aux.length) {
         result.push(aux[i] + "\n" + aux[i + 1]);
@@ -52,11 +61,9 @@ export function divideLyrics() {
     aux_list.push(result.join("\n\n"));
   }
 
-  // aux_list = removeFirstPar(aux_list)
-
   const div_lyrics = aux_list.join("\n\n");
   const div_lyrics_uppercase = div_lyrics.toUpperCase();
-  return title + "\n \n\n" + div_lyrics_uppercase;
+  return addTitle(title, div_lyrics_uppercase, lyrics_info_checkbox.checked);
 }
 
 export function copyFromClipboard() {
@@ -65,7 +72,7 @@ export function copyFromClipboard() {
     if (textArea) {
       textArea.value = text;
     }
-  }).catch(function(error) {
+  }).catch(function (error) {
     // Handle clipboard read error silently
     console.error('Failed to read clipboard:', error);
   });

@@ -85,20 +85,56 @@ describe("Lyrics Utility Functions", () => {
     });
   });
 
+  describe("addTitle", () => {
+    test("should add title to the beginning of lyrics", async () => {
+      const { addTitle } = await import("./lyrics.js");
+      const lyrics = "Verse 1\nVerse 2";
+      const title = "Song Title";
+      const expected = "Song Title\n\nVerse 1\nVerse 2";
+      expect(addTitle(title, lyrics)).toBe(expected);
+    });
+
+    test("should handle empty lyrics", async () => {
+      const { addTitle } = await import("./lyrics.js");
+      const lyrics = "";
+      const title = "Song Title";
+      const expected = "Song Title\n\n";
+      expect(addTitle(title, lyrics)).toBe(expected);
+    });
+
+    test("should handle empty title", async () => {
+      const { addTitle } = await import("./lyrics.js");
+      const lyrics = "Verse 1\nVerse 2";
+      const title = "";
+      const expected = "Verse 1\nVerse 2";
+      expect(addTitle(title, lyrics)).toBe(expected);
+    });
+
+    test("should handle both empty lyrics and title", async () => {
+      const { addTitle } = await import("./lyrics.js");
+      const lyrics = "";
+      const title = "";
+      const expected = "";
+      expect(addTitle(title, lyrics)).toBe(expected);
+    });
+  })
+
   describe("divideLyrics", () => {
     test("should process lyrics and return formatted output", async () => {
       jest.resetModules();
-      
+
       const mockTextArea = {
         value: 'Title\n\nVerse 1 line 1\nVerse 1 line 2\n\nVerse 2 line 1\nVerse 2 line 2',
       };
-      const mockCheckbox = { checked: false };
+      const mockNotCheckedCheckbox = { checked: false };
+      const mockCheckedCheckbox = { checked: true };
 
       const originalGetElementById = global.document.getElementById;
       Object.defineProperty(global.document, 'getElementById', {
         value: jest.fn((id) => {
           if (id === "inputTextArea") return mockTextArea;
-          if (id === "checkbox-parentheses") return mockCheckbox;
+          if (id === "checkbox-parentheses") return mockNotCheckedCheckbox;
+          if (id === "checkbox-lyrics-info") return mockCheckedCheckbox;
           return null;
         }),
         writable: true,
@@ -107,7 +143,7 @@ describe("Lyrics Utility Functions", () => {
 
       const { divideLyrics } = await import("./lyrics.js");
       const result = divideLyrics();
-      
+
       expect(result).toContain('Title');
       expect(result).toContain('VERSE 1 LINE 1');
       expect(result).toContain('VERSE 1 LINE 2');
@@ -123,7 +159,7 @@ describe("Lyrics Utility Functions", () => {
 
     test("should remove parentheses when checkbox is checked", async () => {
       jest.resetModules();
-      
+
       const mockTextArea = {
         value: 'Title (chords)\n\nVerse 1 (C) line 1\nVerse 1 (G) line 2',
       };
@@ -134,6 +170,7 @@ describe("Lyrics Utility Functions", () => {
         value: jest.fn((id) => {
           if (id === "inputTextArea") return mockTextArea;
           if (id === "checkbox-parentheses") return mockCheckbox;
+          if (id === "checkbox-lyrics-info") return mockCheckbox;
           return null;
         }),
         writable: true,
@@ -142,7 +179,7 @@ describe("Lyrics Utility Functions", () => {
 
       const { divideLyrics } = await import("./lyrics.js");
       const result = divideLyrics();
-      
+
       expect(result).toContain('Title');
       expect(result).not.toContain('(chords)');
       expect(result).not.toContain('(C)');
@@ -157,7 +194,7 @@ describe("Lyrics Utility Functions", () => {
 
     test("should handle empty input", async () => {
       jest.resetModules();
-      
+
       const mockTextArea = { value: '' };
       const mockCheckbox = { checked: false };
 
@@ -166,6 +203,7 @@ describe("Lyrics Utility Functions", () => {
         value: jest.fn((id) => {
           if (id === "inputTextArea") return mockTextArea;
           if (id === "checkbox-parentheses") return mockCheckbox;
+          if (id === "checkbox-lyrics-info") return mockCheckbox;
           return null;
         }),
         writable: true,
@@ -174,8 +212,8 @@ describe("Lyrics Utility Functions", () => {
 
       const { divideLyrics } = await import("./lyrics.js");
       const result = divideLyrics();
-      
-      expect(result).toContain('\n \n\n');
+
+      expect(result).toContain('\n');
 
       Object.defineProperty(global.document, 'getElementById', {
         value: originalGetElementById,
@@ -186,7 +224,7 @@ describe("Lyrics Utility Functions", () => {
 
     test("should return empty string when elements are missing", async () => {
       jest.resetModules();
-      
+
       const originalGetElementById = global.document.getElementById;
       Object.defineProperty(global.document, 'getElementById', {
         value: jest.fn(() => null),
@@ -196,7 +234,7 @@ describe("Lyrics Utility Functions", () => {
 
       const { divideLyrics } = await import("./lyrics.js");
       const result = divideLyrics();
-      
+
       expect(result).toBe('');
 
       Object.defineProperty(global.document, 'getElementById', {
@@ -223,9 +261,9 @@ describe("Lyrics Utility Functions", () => {
 
       const { copyOutputText } = await import("./lyrics.js");
       const testText = "Test output text";
-      
+
       copyOutputText(testText);
-      
+
       expect(mockWriteText).toHaveBeenCalledWith(testText);
       // Note: We can't easily test the showNotification call due to module mocking complexity
       // but the main functionality (clipboard write) is tested
@@ -241,7 +279,7 @@ describe("Lyrics Utility Functions", () => {
   describe("clearLyrics", () => {
     test("should clear the textarea value", async () => {
       jest.resetModules();
-      
+
       const mockTextArea = { value: "Some text" };
 
       const originalGetElementById = global.document.getElementById;
@@ -256,7 +294,7 @@ describe("Lyrics Utility Functions", () => {
 
       const { clearLyrics } = await import("./lyrics.js");
       clearLyrics();
-      
+
       expect(mockTextArea.value).toBe('');
 
       Object.defineProperty(global.document, 'getElementById', {
@@ -268,7 +306,7 @@ describe("Lyrics Utility Functions", () => {
 
     test("should handle missing textarea gracefully", async () => {
       jest.resetModules();
-      
+
       const originalGetElementById = global.document.getElementById;
       Object.defineProperty(global.document, 'getElementById', {
         value: jest.fn(() => null),
@@ -277,7 +315,7 @@ describe("Lyrics Utility Functions", () => {
       });
 
       const { clearLyrics } = await import("./lyrics.js");
-      
+
       expect(() => clearLyrics()).not.toThrow();
 
       Object.defineProperty(global.document, 'getElementById', {
@@ -291,7 +329,7 @@ describe("Lyrics Utility Functions", () => {
   describe("copyFromClipboard", () => {
     test("should read from clipboard and set textarea value", async () => {
       jest.resetModules();
-      
+
       const clipboardText = "Clipboard content";
       const mockTextArea = { value: '' };
       const mockReadText = jest.fn(() => Promise.resolve(clipboardText));
@@ -319,7 +357,7 @@ describe("Lyrics Utility Functions", () => {
 
       const { copyFromClipboard } = await import("./lyrics.js");
       await copyFromClipboard();
-      
+
       expect(mockReadText).toHaveBeenCalled();
       expect(mockTextArea.value).toBe(clipboardText);
 
@@ -349,7 +387,7 @@ describe("Lyrics Utility Functions", () => {
       });
 
       const { copyFromClipboard } = await import("./lyrics.js");
-      
+
       // Should not throw error
       await expect(copyFromClipboard()).resolves.toBeUndefined();
 
