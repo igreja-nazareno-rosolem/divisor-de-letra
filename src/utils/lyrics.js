@@ -20,7 +20,7 @@ export function removeParentheses(inputString) {
 export function addTitle(title, lyrics) {
   const titleWithNewline = title + "\n\n";
   return title !== ""
-    ? titleWithNewline + lyrics
+    ? titleWithNewline + "\n" + lyrics
     : lyrics;
 }
 

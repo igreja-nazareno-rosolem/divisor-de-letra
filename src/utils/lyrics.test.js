@@ -90,7 +90,7 @@ describe("Lyrics Utility Functions", () => {
       const { addTitle } = await import("./lyrics.js");
       const lyrics = "Verse 1\nVerse 2";
       const title = "Song Title";
-      const expected = "Song Title\n\nVerse 1\nVerse 2";
+      const expected = "Song Title\n\n\nVerse 1\nVerse 2";
       expect(addTitle(title, lyrics)).toBe(expected);
     });
 
@@ -98,7 +98,7 @@ describe("Lyrics Utility Functions", () => {
       const { addTitle } = await import("./lyrics.js");
       const lyrics = "";
       const title = "Song Title";
-      const expected = "Song Title\n\n";
+      const expected = "Song Title\n\n\n";
       expect(addTitle(title, lyrics)).toBe(expected);
     });
 
@@ -124,7 +124,7 @@ describe("Lyrics Utility Functions", () => {
       jest.resetModules();
 
       const mockTextArea = {
-        value: 'Title\n\nVerse 1 line 1\nVerse 1 line 2\n\nVerse 2 line 1\nVerse 2 line 2',
+        value: 'Title\nAuthor\n\nVerse 1 line 1\nVerse 1 line 2\n\nVerse 2 line 1\nVerse 2 line 2',
       };
       const mockNotCheckedCheckbox = { checked: false };
       const mockCheckedCheckbox = { checked: true };
@@ -144,11 +144,7 @@ describe("Lyrics Utility Functions", () => {
       const { divideLyrics } = await import("./lyrics.js");
       const result = divideLyrics();
 
-      expect(result).toContain('Title');
-      expect(result).toContain('VERSE 1 LINE 1');
-      expect(result).toContain('VERSE 1 LINE 2');
-      expect(result).toContain('VERSE 2 LINE 1');
-      expect(result).toContain('VERSE 2 LINE 2');
+      expect(result).toEqual('Title - Author\n\n\nVERSE 1 LINE 1\nVERSE 1 LINE 2\n\nVERSE 2 LINE 1\nVERSE 2 LINE 2');
 
       Object.defineProperty(global.document, 'getElementById', {
         value: originalGetElementById,
